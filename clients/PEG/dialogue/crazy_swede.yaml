@@ -1,0 +1,201 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Skwisgaar the Crazy Swede
+AVATAR: gui/icons/npc.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Chop!  Chop!  Chopity Chop-chop?"
+        # just a temporary hack
+        - responses:
+            -
+              - "Chop-chop.  Chop-choppy, choppy chop."
+              - a1
+            - 
+              - "You are the woodcutter?"
+              - a2
+            - 
+              - "Sorry, I don't speak chop."
+              - end
+
+    a1:
+        - say: "Ah, you speak the lingo!  How long have you been chopping the good chop?"
+        - responses:
+            -
+              - "Oh, me?  - These hands are not suited for manual labor."
+              - a2
+            -
+              - "I have been known to chop-chop the wood what needs choppin' -- if you know what I mean."
+              - b1
+    a2:
+        - say: "You gots to Chop what to Chop when the Choppin' needs a Chop!!!"
+        - responses:
+            -
+              - "Yes, my man it is only us against the wood!"
+              - b1
+            -
+              - "Chop?  What the hell are you talking about!"
+              - b2
+            -
+              - "Enough with the chop talk!  Do you have any yeast?"
+              - end
+              - quest['beer'].isGoalValue('beer_instructions')
+    b1:
+        - say: "Ah, so you chop the chop... but do you Chop the Chop?"
+        - responses:
+            -
+              - "Well, that's how we did it back in Sweden!"
+              - c1
+            -
+              - "Well, that's how we did it back in Norway!"
+              - c2
+            -
+              - "Well, that is how we Finns get it done!"
+              - c3
+
+    b2:
+        - say: "Chopity!!! Chop the Chop-chop!!!"
+        - responses:
+            -
+              - "Chop?  You betcha - chop, chop!"
+              - b1
+            -
+              - "Yeast.  Y-E-A-S-T.  For making booze.  Do you understand me?"
+              - end
+              - quest['beer'].isGoalValue('beer_instructions')              
+            -
+              - "Screw this, you cannot argue with a Swede!"
+              - c1
+            -
+              - "You got a problem?  Hit in the head during the war?"
+              - permanent_failure
+              
+    c1:
+        - say: "Sweden!  Sweden?  Got no chops!!!"
+        - responses:
+            -
+              - "But they told me you were from there."
+              - main_dialog
+            -
+              - "Oh.. you aren't Swedish, are you?"
+              - end
+            -
+              - "Did I say Sweden?  I meant Norway."
+              - c2
+              - quest['beer'].getValue('yeast_available')
+              
+    c2:
+        - say: "N..n...Norway.  Norway...  NORWAY!  The FJORDS!!!! [sobs]"
+        - responses:
+            -
+              - "Did I say Norway?  I meant Sweden."
+              - c1
+            -
+              - "Hey, Hey - there it's OK.  We have Fjords right here in Finland."
+              - c3
+            - 
+              - "You are not pining, are you?"
+              - main_dialog
+            -
+              # below conditionals could be changed to "isActiveQuest" but it hardly matters
+              - "Yeah, buddy.  You are a long way from home.  Be nice if we had a drink to toast to Norway."
+              - d
+              - quest.hasQuest('beer') and quest['beer'].getValue('yeast_available')
+            -
+              - "Yeah, buddy.  You are a long way from home."
+              - dprime
+              - quest.hasQuest('beer') and not quest['beer'].getValue('yeast_available')
+              
+    c3:
+        - say: "FINLAND GOT NO FJORDS!!!!"
+        - responses:
+            -
+              - "Whoa... no need to get excited there... uh... Chop?  Choppy-Chop-Chop?"
+              - b2
+            -
+              - "At least they know how to make booze!"
+              - end
+            -
+              - "You are totally insane."
+              - permanent_failure
+              
+    d:
+        - say: "Ah, a toast to the King!  The King of Norway!  [looks around furtively]  But the Skol!  Need the bugs for the skol! "
+        - responses:
+            -
+              - "Bugs?  You eat bugs?"
+              - e1
+            -
+              - "Bugs?  You mean for beer?  Little yeasties?"
+              - e2
+    dprime:
+        # this is where you go if yeast is unavailable
+        - say: "No bugs for you!"
+        - responses:
+            -
+              - "Nuts."
+              - end
+    e1:
+        - say: "HAHAA... uncultured baboon!  Baboon- bug eater!  Don't eat the bugs!  Ferment with the bugs! "
+        - responses:
+            -
+              - "That's what I need!  Fermentation bugs!"
+              - end
+            -
+              - "Ah, indeed!  A fermented beverage!  Fit for a King..."
+              - d
+            -
+              - "YES!  The bugs!  The yeast bugs!  For the Fermentation!"
+              - get_yeast
+    e2:
+        - say: "Yeasties!  Belittle them not, foreign stranger!  The finest Norwegian yeast I have saved for 1,000 years!!"
+        - responses:
+            -
+              - "Oh you're one to talk about Foreigers, Swede!"
+              - end
+            -
+              - "Ah, Norwegian yeast.  Truly a permanent cultural artifact!"
+              - e1
+            -
+              - "1000 years?"
+              - permanent_failure
+        
+    get_yeast:
+        - say: "My precious beasties... yeasty beasties for the fermentation!  Don't forget to save Culture and Civilization!"
+        - get_stuff: yeast
+        - set_value:
+            quest: 'beer'
+            variable: "yeast_available"
+            value: 0
+        - responses:
+            -
+              - "Thanks buddy!  Skol!"
+              - end
+    
+    permanent_failure:
+        - say: "[ scowls ] Chop!  Chop!  Chopity Chop-chop.  Chop."
+        - set_value:
+            quest: 'beer'
+            variable: "yeast_available"
+            value: 0
+        # yeast is now unobtainable
+        - responses:
+            -
+              - "Go ahead and chop wood until the end of your days, nutball!"
+              - end
+        

@@ -1,0 +1,365 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Janie
+AVATAR: gui/icons/npc.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Halt, identify yourself!"
+        - responses:
+            -
+              - "Whoa, easy with that weapon, sister"
+              - first_impression
+              - not pc.met('janie')
+            - 
+              - "I'm the beer savior, baby!"
+              - gratitude
+              - quest['beer'].getValue('beer_quality') >= 1
+            - 
+              - "It's me - don't you remember?"
+              - old_pals
+              - pc.met('janie')
+            # The 'end' section ends the conversation
+            -
+              - "Sorry, didn't mean to startle you. I'll just be moving along now."
+              - end
+
+    first_impression:
+        - say: "Hey Stranger.  You're new around here, I don't recognize your face..."
+        - meet: janie
+        - responses:
+            -
+              - "Yeah, just blew in with the last storm."
+              - elaborate_fedex
+              - not quest.hasQuest('fedex') and not quest.hasFinishedQuest('fedex')
+            # above should always be true since there is no other way to get the quest  
+            -
+              - "But one night with me, babe, and you'll never forget it"
+              - rude_comeon
+ 
+    elaborate_fedex:
+        - say: "Well, maybe you can do me a favor.   I have this package I need delivered
+        to Pekko.  But you gotta be casual about it.  No one can know you why you are looking for him."
+        - responses: 
+            - 
+              - "Me?  Why Me?"
+              - why_me
+            -  
+              - "Why the secrecy?"
+              - why_secret
+            -
+              - "What's in it for me?"
+              - what_do_i_get
+            -
+              - "Whatever, I need an excuse to wander around anyway."
+              - quest_fedex
+            - 
+              - "Find another errand boy."
+              - end
+ 
+    why_me:
+        - say: "No one knows you.  You're new here.  You can be expected to be wandering around being nosy."
+        - responses:
+           -
+             - "I'm still not convinced."
+             - back
+           - 
+             - "Beats watching nuthin' on TV."
+             - quest_fedex
+ 
+    why_secret:
+        - say: "Look buddy, it's no questions asked.  You think you are the only frozen bum to come wandering in here?"
+        - responses:
+           -
+             - "Bum?  You don't even know who I am."
+             - why_me
+           - 
+             - "Really.  I remain unswayed by your logic, but you are pleasing to the eye so keep talking."
+             - back 
+           -
+             - "No need to get testy, I'll do it."
+             - quest_fedex
+ 
+    what_do_i_get:
+        - say:  "Everybody wants something, huh.  I suppose my undying gratitude won't cut it?  How about a beaver pelt?  They make great hats..."
+        - responses:
+           - 
+             - "Naw, it's OK, your gratitude's enough for me."
+             - quest_fedex
+           - 
+             - "A beaver pelt it is, then!"
+             - quest_fedex
+             # This can never get delivered, since the delivery target is dead
+           - 
+             - "I already gotta hat.  Deliver your own package."
+             - end
+        
+    quest_fedex:           
+         # Need some way of triggering the change in game state; package moving from Janie's inventory to yours]
+         - say:  "You should be able to find Pekko in the main compound area.  If anyone asks you why you are looking for him, 'say that he promised you something'.  Pekko's always making promises.  Oh, and don't open the box. [ Janie hands you the package ]"
+         - start_quest: quests/fedex.yaml
+         - get_stuff: box
+         # I suspect the "get_box" should be rolled into start_quest
+         - responses:
+             - 
+               - "Why can't I open the box?"
+               - why_no_open
+             - 
+               - "You got it, boss."
+               - old_pals
+ 
+    why_no_open:
+        - say: "You are the nosiest little mailman anywhere, ain'tcha?  How about 'it's private.'?  If I wanted you to know what it was, I wouldn't have wasted a perfectly good box it, now would I?"
+        - responses:
+           -
+             - "I guess not."
+             - old_pals        
+
+    old_pals:
+        - say: "So what can I do for you?"
+        - responses:
+           -
+             - "I'm trying to make beer, can you help me find some stuff?"
+             - help_beer
+             - quest['beer'].isGoalValue('beer_instructions') and not quest.hasFinishedQuest('beer') and quest['beer'].getValue('beer_quality') < 1
+           -
+             - "I guess I'll see if I can't find this Pekko character for you."
+             - end
+             - quest.hasQuest('fedex') and not quest.hasFinishedQuest('fedex') and not quest['fedex'].isGoalValue('found_pekko')
+           -
+             - "So long, Janie.  Catch you later."
+             - end
+             - not quest.hasQuest('fedex') or quest.hasFinishedQuest('fedex')
+           -
+             - "Uh, I opened the box."
+             - open_box
+             - quest['fedex'].getValue('open_box')
+           -
+             - "I have some bad news.  I found your friend, Pekko.  In the water tank.  Dead."
+             - dead_pekko
+             - quest['fedex'].isGoalValue('found_pekko') and not quest['fedex'].getValue('accused_of_murder')
+
+           -
+             - "What are we going to do about Pekko's murder?"
+             - discuss_murder
+             - quest.hasQuest('fedex') and quest['fedex'].getValue('accused_of_murder')
+
+    help_beer:
+        - say: "Well, what do you need?"
+        - responses:
+           -
+             - "Where do you folks get water from.  The more pure, the better."
+             - help_water
+           -
+             - "Some kind of grain, or fruit or something."
+             - help_grain
+           -
+             - "I'm really looking for some brewer's yeast."
+             - help_yeast
+           -
+             - "I need a pot to cook the mash in."
+             - help_pot
+           -
+             - "It would be great if I had some bottles to put the brew in!"
+             - help_bottles
+           - 
+             - "I think I can handle it from here."
+             - back
+
+    help_water:
+        - say: "Oh, that is the one thing we have plenty of.  We have an old tanker trunk that we shovel the snow in and melt it.  You can see it from up here, but you have to go downstairs to tap it.  But the water's been tasting a little funny lately."
+        - responses:
+           -
+             - "Great, that's a huge help."
+             - back
+
+    help_grain:
+        - say: "You could try the farm, and there should be some food in the storerooms"
+        - responses:
+           -
+             - "Thanks, I'll try that."
+             - back
+
+    help_yeast:
+        - say: "You got me.  I wonder if there is even any left at all."
+        - responses:
+           -
+             - "Someone must have some!"
+             - back
+
+    help_pot:
+        - say: "Did you try the kitchen?  Or the storerooms?"
+        - responses:
+           -
+             - "Uh, yeah.  I guess that was obvious."
+             - back
+
+    help_bottles:
+        - say: "All the random junk is downstairs in old parking lot.  We have our own little junkyard."
+        - responses:
+           -
+             - "Oooh... there is probably lots of good stuff down there."
+             - back
+
+    open_box:
+        - say: "What!  You little worm!  Why did you do that!"
+        - responses:
+           -
+             - "Well, I figured since Pekko was dead and all..."
+             - dead_pekko
+             - quest['fedex'].isGoalValue('found_pekko')
+           -
+             - "I'm sorry, I was just curious."
+             - rewrap_box
+             
+    boot_gift:
+       - say: "That's what was in the package. [Janie takes boots out of the package, and gives them to you]"
+       - get_stuff: boots
+       - responses:
+          -
+            - "Oh.  I must be missing something..."
+            - explain_boots
+ 
+    discuss_murder:
+       - say: "Look.  Just stay out of it.  It's not really your business anyway, Stranger.  Just forget we ever talked."
+       - responses:
+           -
+             - "Alright, Alright.  But I don't like it."
+             - give_up_quest
+           -
+             - "It was Bart."
+             - accuse_bart
+           - 
+             - "It was Matti, the Snow Shoveler!"
+             - accuse_matti
+           - 
+             - "Well, I'm going to talk to the boss about it."
+             - report_to_boss
+
+    give_up_quest:
+       - say: "You are making the right decision."
+       - responses:
+           -
+             - "If you want me to drop it, I'll drop it."
+             - drop_quest
+           -
+             - "No, I can't drop it.  I have to talk to the authorities"
+             - report_to_boss
+    
+    drop_quest:
+       - complete_quest: fedex
+       - say: "Drop it.  It's bigger than than both of us."
+       - responses:
+           -
+             - "Consider it dropped.  How about a date?"
+             - end
+    
+    accuse_bart:
+       - say: "The town drunk???  ...really?  Anyway... I don't want to know.  He's dead.  No one really liked him much anyway.  Just drop it, please."
+       - set_value:
+            quest: 'fedex'
+            variable: 'accused_of_murder'
+            value: 'bart'
+       - responses:
+           -
+             - "You can't just allow folks to murder people! It's wrong!  Someone must be informed!"
+             - report_to_boss
+           -
+             - "If you want me to, I'll forget about the whole thing..."
+             - give_up_quest
+
+    accuse_matti:
+       - say: "Matti?  He looks mean, but I don't think he would hurt a fly.  Anyway...  I don't want to know.  He's dead.  No one really liked him much anyway.  Just drop it, please."
+       - set_value:
+            quest: 'fedex'
+            variable: 'accused_of_murder'
+            value: 'matti'
+       - responses:
+           -
+             - "You can't just allow folks to murder people! It's wrong!  Someone must be informed!"
+             - report_to_boss
+           -
+             - "If you want me to, I'll forget about the whole thing..."
+             - give_up_quest
+
+    report_to_boss:
+       - say: "You can talk to Kimmo, but I don't think you'll find the justice you are looking for."
+       - responses:
+           -
+             - "Maybe.  But I have to try, right?  Otherwise, we are no better than wild animals."
+             - end
+
+    explain_boots:
+       - say: "The boots were a signal that he should leave town... that he'd gone too far this time."
+       - responses:
+           -
+             - "You knew about this?  Who do you think killed him?"
+             - discuss_murder
+           -
+             - "I think I know who killed him."
+             - discuss_murder
+               
+    dead_pekko:
+       - say: "He's dead?  Well, I'm too late then. I guess you can keep the boots, then."
+       - responses:
+          -
+            - "What boots?"
+            - boot_gift
+            - not quest['fedex'].getValue('open_box')
+          -
+            - "Yeah, I figured he wouldn't need them.  Why did you send him boots, anyway?"
+            - explain_boots
+            - quest['fedex'].getValue('open_box')
+          -
+            - "Does this mean no beaver pelt?"
+            - no_beaver_pelt
+    
+    no_beaver_pelt:
+       - say: "No pelt."
+       - responses:
+          -
+            - "Awwwwww..."
+            - back
+
+    rewrap_box:
+       - say: "Give me that back! [Janie takes boots from PC and rewraps them].  Now, here.  And don't open it again."
+       # reset the quest: Note we need to make sure we don't generate an infinite supply of combat boots!
+       - take_stuff: boots
+       - delete_quest: fedex
+       - start_quest: quests/fedex.yaml
+       - get_stuff: box 
+       # I suspect this should be rolled into "start_quest"
+       - responses:
+          -
+            - "OK, It will never happen again."
+            - old_pals
+
+    gratitude: 
+        - say: "Well aren't you just a thick slice of awesome."
+        - responses:
+           - 
+             - "I try, I try."
+             - old_pals
+    
+    rude_comeon:
+        - say: "[fondles weapon] I hope you can take it as well as you give it..."
+        - responses:
+            -
+              - "Any way you want it, that's the way you need it!"
+              - end
+ 

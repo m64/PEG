@@ -1,0 +1,46 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+DEFINES:
+    beer_quality:
+        value: 0
+        goal_value: 5
+        # 0 = no beer, -1 = poison beer, >=1 quality of beer
+
+    beer_instructions:
+        value: ''
+        goal_value: 'Read'
+
+    farmer_beer_convinced:
+        value: 0
+        goal_value: 1
+
+    yeast_available:
+        value: 1
+        goal_value: 0
+        # If you get the yeast or say the wrong thing to the crazy swede, this gets set to 0
+
+    grain_available:
+        value: 1
+        goal_value: 0
+        # If you get the grain this gets set to 0, you only get 1.
+        # future versions might let you get the grain after you have completed a batch of "bad" beer.
+
+QUEST_PROPERTIES:
+    quest_id: beer
+    quest_giver_id: 12 # what is this for
+    quest_name: "Where's me beer!?"
+    description: "Arr, I need beer!"
+

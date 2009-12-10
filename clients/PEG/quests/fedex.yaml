@@ -1,0 +1,54 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+DEFINES:
+    found_pekko:
+        value: 0
+        goal_value: 1
+        # 1 = found
+
+    reported_murder:
+        value: set()
+        goal_value: set()
+        # this contains a set of NPCs the murder is reported to.
+        # the goal_value currently has no effect.
+         
+    drunkard_water_asked:
+        value: 0
+        goal_value: 1
+        #strange little variable so you cannot ask drunkard about water twice.
+
+    accused_of_murder:
+        value: ''
+        goal_value: 'bart'
+        # this is who the PC accuses of murder.  Only 1 at a time.  
+        # The goal value is set to "bart" as he is the actual murderer
+         
+    got_barts_coat:
+        value: 0
+        goal_value: 1
+        # You can blackmail bart to get his coat, but only once
+         
+    open_box:
+        value: 0
+        goal_value: 0
+        # !=0 box was opened
+
+QUEST_PROPERTIES:
+    quest_id: fedex
+    quest_giver_id: 12 # what is this for?
+    quest_name: "Delivery for Pekko"
+    description: "Deliver a package from Janie to Pekko"
+

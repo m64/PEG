@@ -1,0 +1,113 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+#   NOTE:  This is not a "real" dialogue file, it is meant to be a template for
+#   Any generic fortified mall (techdemo location) denizen
+---
+NPC: Anyone
+AVATAR: gui/icons/npc.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Hello.  How can I help you?"
+        - responses:
+            -
+              - "I'm looking for stuff to make beer with "
+              - help_beer
+              - quest.hasQuest('beer') and not quest.hasFinishedQuest('beer') and quest['beer'].isGoalValue('beer_instructions')
+            - 
+              - "I'm the beer savior, remember?"
+              - gratitude
+              - quest['beer'].getValue('beer_quality') >= 1
+            - 
+              - "I'm looking for Pekko, you seen him?"
+              - help_fedex
+              - quest.hasQuest('fedex') and not quest.hasFinishedQuest('fedex') and not quest['fedex'].isGoalValue('found_pekko')
+            -
+              - "Whoa!  It talks!  Never mind"
+              - end
+
+    help_beer:
+        - say: "I am always happy to give intimate details of our home to strangers, shoot!"
+        - responses:
+           -
+             - "Where do you folks get water from.  The more pure, the better."
+             - help_water
+           -
+             - "Some kind of grain, or fruit or something."
+             - help_grain
+           -
+             - "I'm really looking for some brewer's yeast."
+             - help_yeast
+           -
+             - "I need a pot to cook the mash in."
+             - help_pot
+           -
+             - "It would be great if I had some bottles to put the brew in!"
+             - help_bottles
+           - 
+             - "I think I can handle it from here."
+             - back
+
+    help_water:
+        - say: "Oh, that is the one thing we have plenty of.  We have an old tanker trunk that we shovel the snow in and melt it.  You can see it from up here, but you have to go downstairs to tap it.  But the water's been tasting a little funny lately."
+        - responses:
+           -
+             - "Great, that's a huge help."
+             - back
+
+    help_grain:
+        - say: "You could try the farm, and there should be some food in the storerooms"
+        - responses:
+           -
+             - "Thanks, I'll try that."
+             - back
+
+    help_yeast:
+        - say: "You got me.  I wonder if there is even any left at all."
+        - responses:
+           -
+             - "Someone must have some!"
+             - back
+
+    help_pot:
+        - say: "Did you try the kitchen?  Or the storerooms?"
+        - responses:
+           -
+             - "Uh, yeah.  I guess that was obvious."
+             - back
+
+    help_bottles:
+        - say: "All the random junk is downstairs in old parking lot.  We have our own little junkyard."
+        - responses:
+           -
+             - "Oooh... there is probably lots of good stuff down there."
+             - back
+
+    help_fedex:
+        - say: "Pekko... I thought he was out scouting?  Did you try the Inn?"
+        - responses:
+           -
+             - "OK, the Inn, thanks."
+             - back
+
+    gratitude: 
+        - say: "Well aren't you just a thick slice of awesome."
+        - responses:
+           - 
+             - "I try, I try."
+             - main_dialog
+ 

@@ -1,0 +1,7 @@
+This repository is based on code from FIFE and PARPG. For the record,
+here are the latest revisions that have been pulled from the original
+repositories.
+
+http://fife.svn.cvsdude.com/engine/trunk/  -- at /, revision 3110
+http://parpg-svn.cvsdude.com/parpg/trunk/game/ -- at /clients/PEG, revision 441
+http://parpg-svn.cvsdude.com/parpg/trunk/tools/writing_editor/ -- at /utils/parpg_writing_editor, revision 441

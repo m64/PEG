@@ -1,0 +1,4 @@
+<?fife type="object"?>
+<object id="pillar2_segment2" namespace="PARPG" blocking="1" static="1">
+	<image source="p2_s2.png" direction="0" y_offset="-29" x_offset="-15" />
+</object>

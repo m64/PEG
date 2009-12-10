@@ -1,0 +1,244 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Heljq
+AVATAR: gui/icons/npc.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Hello, there!  A new addition to the labor pool, I see."
+        - responses:
+            -
+              - "What do you do around here?"
+              - expound_quartermaster
+            -
+              - "You're the Quartermaster?  I bet you can help me with some requisitions?"
+              - pre_help_beer
+              - quest.hasQuest('beer') and not quest.hasFinishedQuest('beer') and quest['beer'].isGoalValue('beer_instructions')
+            - 
+              - "You going to help me distribute this new beer?"
+              - beer_network
+              - quest['beer'].getValue('beer_quality') >= 1
+            - 
+              - "You haven't seen Pekko around lately, have you?"
+              - help_fedex
+              - quest.hasQuest('fedex') and not quest.hasFinishedQuest('fedex') and not quest['fedex'].isGoalValue('found_pekko')
+            -
+              - "Labor pool?  I forgot my suit."
+              - end
+
+    expound_quartermaster:
+        - say: "I am the like the supply sergeant.  I am in charge of all the communal goods - particularly food."
+        - responses:
+           -
+             - "Sounds like an important job.  Are you bribe-able?"
+             - bribe_comment
+           - 
+             - "Really?  Because I am looking for some items to brew some beer..."
+             - pre_help_beer
+             - quest.hasQuest('beer') and not quest.hasFinishedQuest('beer') and quest['beer'].isGoalValue('beer_instructions')
+             
+    bribe_comment:
+        - say: "Oh, funny. [narrows eyes] But I do like to help people who help themselves.  Like God."
+        - responses:
+           -
+             - "So you accept burnt offerings?"
+             - main_dialog
+
+    pre_help_beer:
+        - say: "Hey, I don't just give stuff away.  You have to have a requisition note from Kimmo, or at least trade something. "
+        - responses:
+           -
+             - "Who's Kimmo?"
+             - describe_kimmo
+           - 
+             - "Well, I don't have a requisition... I am going to make some beer."
+             - elaborate_beer
+             
+    describe_kimmo:
+        - say: "Kimmo is the leader of our merry band.  He's my boss -- the boss of all of us, currently."
+        - responses:
+           -
+             - "What do you mean, currently?"
+             - describe_rivalry
+           - 
+             - "So do you think Kimmo would let me have some stuff to make beer?"
+             - elaborate_beer
+             
+    elaborate_beer:
+        - say: "Beer, huh.  That might undermine Jacob's inn a bit.  Kimmo would probably approve of that."
+        - responses:
+           -
+             - "So you will help me?"
+             - help_beer
+           - 
+             - "Why would Kimmo want to undermine Jacob?"
+             - describe_rivalry             
+
+    describe_rivalry:
+        - say: "Well, Jacob -- I guess you would call him Kimmmo's primary rival for leadership."
+        - responses:
+           -
+             - "Do you think he'll try to take over?"
+             - elaborate_rivalry
+           - 
+             - "Interesting.  And whom do you support?"
+             - which_side
+           -
+             - "So, Kimmo would want me to give the place another source of beer, right?"
+             - help_beer
+           -
+             - "Ugh, small town politics.  Say no more."
+             - main_dialog             
+             
+    which_side:
+        - say: "Well, most of us owe Kimmo our lives.  But I'm no fighter.  I've survived this long without getting involved in petty power struggles.  I am good at what I do."
+        - responses:
+           -
+             - "But you are not against a little underhanded move against Jacob..."
+             - help_beer
+           - 
+             - "So, playing both sides against the middle.  What if Jacob makes a move?"
+             - elaborate_rivalry
+             
+    elaborate_rivalry:
+        - say: "I don't think he'll make a move... as long as we stay here."
+        - responses:
+           -
+             - "Why would you move?  This place is awesome!"
+             - why_move
+             
+    why_move:
+        - say: "Pekko's got this idea that the winters are going to get worse.  He says Lapland up north is already glaciated, and it's only a matter of time before this place is totally frozen out."
+        - responses:
+           -
+             - "So you will help me make some beer?"
+             - help_beer
+           - 
+             - "And away from the Paatalo, Kimmo's power base is weak.  Who do you support?"
+             - which_side
+             
+    help_beer:
+        - say: "Well, what do you need exactly?"
+        - responses:
+           -
+             - "I need some pure water."
+             - help_water
+           -
+             - "The basis of the the brew is some source of sugar, like grain or potatoes."
+             - help_grain
+           -
+             - "A yeast culture would really make the thing less dicey"
+             - help_yeast
+           -
+             - "Of course, I'll need something to cook the mash in..."
+             - help_pot
+           -
+             - "When it's all done, I'll need to put the beer in something"
+             - help_bottles
+           - 
+             - "That should about do it, thanks."
+             - back
+
+    help_water:
+        - say: "Water is unrestricted.  Go downstairs and draw a bucket from the cistern.  We have a good filter on it."
+        - responses:
+           -
+             - "Water, check."
+             - back
+
+    help_grain:
+        - say: "Well, food.  Now that is not easy to get.  I can't authorize you any grain.  But maybe there are some old potatoes around..."
+        - responses:
+           -
+             - "Potatoes? I guess that's not too bad. Where would I find some?"
+             - help_potatoes
+           -
+             - "Grain would really be the best... where do you get it?"
+             - help_farm
+           -
+             - "OK, I'll see what I can scrounge up"
+             - back
+
+    help_yeast:
+        - say: "You know... Skwisgaar is always babbling about yeast and stuff.  Good luck getting a straight answer out of him though."
+        - responses:
+           -
+             - "Skwisgaar... is that the wood chopper?"
+             - wood_chopper
+
+    help_pot:
+        - say: "Well, I got a pot.  But I can't just give it up.  What will you give me for it?"
+        - responses:
+           -
+             - "Well, I got this pocket knife... would that do?"
+             - trade_knife
+           -
+             - "No deal.  I'll find my own."
+             - back
+             
+    help_bottles:
+        - say: "Junkyard.  Also unrestricted.  Help yourself."
+        - responses:
+           -
+             - "Thanks."
+             - back
+
+    trade_knife:
+        - say: "Let me see it. [You hand over the knife].  Humh.  A little used.   But OK, I like you."
+        - take_stuff: pocket_knife
+        - get_stuff: brew_pot
+        - responses:
+           -
+             - "It's a deal then."
+             - help_beer
+
+    wood_chopper:
+        - say: "Yeah, the wood chopper.  Came over to help us against the Russkies.  From Sweden or something.  I don't think he's quite right in the head."
+        - responses:
+           -
+             - "I'll keep that in mind"
+             - help_beer
+
+    help_potatoes:
+        - say: "There should be some old ones in that storeroom back there.  Probably won't be missed."
+        - responses:
+           -
+             - "Wow, thanks.  You won't regret this."
+             - back
+
+    help_farm:
+        - say: "I'm sorry.  I can't really disclose that information.  That farm is our life."
+        - responses:
+           -
+             - "Hey, it's cool.  I am not looking for trouble."
+             - back
+
+    help_fedex:
+        - say: "He was here a couple of days ago, getting provisioned for one of his excursions.  He should be back by now though."
+        - responses:
+           -
+             - "So the you last saw him, he was leaving the compound."
+             - back
+
+    beer_network: 
+        - say: "I'll think about it.  Let's see if things quiet down."
+        - responses:
+           - 
+             - "Alright, Helja."
+             - main_dialog
+ 

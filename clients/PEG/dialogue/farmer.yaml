@@ -1,0 +1,178 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Farmer Manslow
+AVATAR: gui/icons/npc.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Who the hell are you??"
+        - responses:
+            -
+              - "I'm looking for stuff to make beer with "
+              - convince_farmer
+              - quest.hasQuest('beer') and quest['beer'].isGoalValue('beer_instructions') and not quest.hasFinishedQuest('beer') and not quest['beer'].isGoalValue('farmer_beer_convinced')
+            - 
+              - "You can help me with the beer, thing, right?"
+              - help_beer
+              - quest.hasQuest('beer') and quest['beer'].isGoalValue('beer_instructions') and not quest.hasFinishedQuest('beer') and quest['beer'].isGoalValue('farmer_beer_convinced')
+            - 
+              - "Hey, that wheat you gave me really made the brew work."
+              - gratitude
+              - quest['beer'].getValue('beer_quality') > 3
+            - 
+              - "Have you tried my beer?"
+              - grumpitude
+              - quest['beer'].getValue('beer_quality') !=0 and quest['beer'].getValue('beer_quality') <= 3
+            - 
+              - "I'm looking for Pekko, you seen him?"
+              - help_fedex
+              - quest.hasQuest('fedex') and not quest.hasFinishedQuest('fedex')
+            - 
+              - "This is quite a nice farm you have here, can you tell me about it?"
+              - chat_farm
+            -
+              - "Hey, relax there old timer!"
+              - leave
+
+    convince_farmer:
+        - say: "Never touch the stuff."
+        - responses:
+           -
+             - "Come on -- have a heart.  Man cannot live on bread alone!"
+             -  leave
+           - 
+             - "Well to be honest... we are trying to undermine Jacob's stranglehold on the booze in this town."
+             - inn_explain
+             
+    inn_explain:
+        - say: "Really.  What makes you think I'll help you."
+        - responses:
+           -
+             - "Well, you know, Bart, he's a good guy..."
+             -  leave
+           - 
+             - "Because Jacob is the only guy here grumpier than you!"
+             - help_beer
+             
+             
+    help_beer:
+        - say: "He is a right old bastard, that Jacob... What are you looking for?"
+        - set_value:
+            quest: 'beer'
+            variable: "farmer_beer_convinced"
+            value: 1       
+        - responses:
+           -
+             - "First, I need some water."
+             - help_water
+           -
+             - "What I really need is some kind of grain, or fruit or something."
+             - help_grain
+             - not quest['beer'].isGoalValue('grain_available')
+           -
+             - "You wouldn't happen to know where I can find some yeast?"
+             - help_yeast
+           -
+             - "Well, I need a big pot to cook the mash in."
+             - help_pot
+           -
+             - "The final step is some thing to hold the final product in."
+             - help_bottles
+           - 
+             - "You are the grumpiest old man ever."
+             - leave
+
+    help_water:
+        - say: "What are you an idiot?  We're surrounded by SNOW."
+        - responses:
+           -
+             - "Sorry, no need to be a jerk about it..."
+             - leave
+
+    help_grain:
+        - say: "Well, that is my department.  I'll give you a bushel if you promise to use your brew to cause Jacob trouble."
+        - get_stuff: bushel_of_grain
+        - set_value:
+            quest: 'beer'
+            variable: "grain_available"
+            value: 0
+        - responses:
+           -
+             - "Deal."
+             - back
+
+    help_yeast:
+        - say: "Yeast.  You really think someone is keeping around some kind of starter culture?"
+        - responses:
+           -
+             - "Uh... yeah?  Hey, how do you know so much about brewing if you don't even drink!"
+             - leave
+
+    help_pot:
+        - say: "Is there anything that you HAVE to make beer with?"
+        - responses:
+           -
+             - "Well, I have these instructions..."
+             - back
+
+    help_bottles:
+        - say: "Junkyard."
+        - responses:
+           -
+             - "Where's the junkyard?"
+             - explain_junkyard
+
+    explain_junkyard:
+        - say: "Downstairs.  Near the woodpile and the garbage dump."
+        - responses:
+           -
+             - "Wow, that was kind of helpful... maybe you aren't so bad after all! "
+             - leave
+
+    help_fedex:
+        - say: "Pekko... I thought he was out scouting?  Did you try the Inn?"
+        - responses:
+           -
+             - "OK, the Inn, thanks."
+             - back
+
+    gratitude: 
+        - say: "I still think it's a waste of grain.  But anything that screws that bastard Jacob is OK by me."
+        - responses:
+           - 
+             - "Couldn't have done it without you."
+             - leave
+             
+    grumpitude: 
+        - say: "At least you didn't waste any of my grain on it.  Awful stuff."
+        - responses:
+           - 
+             - "No thanks, to you old man."
+             - leave
+    chat_farm: 
+        - say: "I don't have time for chit chat.  Talk to my assistants."
+        - responses:
+           - 
+             - "OK, I'll do that."
+             - back
+    leave:
+        - say: "Get off mah land!"
+        - responses:
+            -
+              - "Bye!"
+              - end

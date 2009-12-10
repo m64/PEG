@@ -1,0 +1,134 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Matti
+AVATAR: gui/icons/npc.png
+START: opening_dialog
+
+SECTIONS:
+    opening_dialog:
+        - say: "Good to talk to someone, Matti could use a break"
+        - responses: 
+           -
+             - "You are some kind of psycho-killer, aren't you?"
+             - end
+             - quest['fedex'].getValue('accused_of_murder') == 'matti'
+           -
+             - "Matti, I was wrong about Pekko's killer - I think it was someone else."
+             - unaccuse_matti
+             - quest['fedex'].getValue('accused_of_murder') == 'matti'
+           -
+             - "I found a body in your cistern there.  What do you know about it?"
+             - discuss_body
+             - not quest['fedex'].getValue('accused_of_murder') and quest['fedex'].isGoalValue('found_pekko')
+           -
+             - "Hey, what's going on here?"
+             - main_dialog
+
+    main_dialog:
+        - say: "Matti shovels the snow."
+        - responses:
+           -
+             - "Matti?  Oh, you must be Matti.  Where does all the snow... you know... go?"
+             - explain_shoveling
+           -
+             - "I'm looking for stuff to make beer with"
+             - help_beer
+             - quest.hasQuest('beer') and not quest.hasFinishedQuest('beer') and quest['beer'].isGoalValue('beer_instructions')
+           - 
+             - "I'm looking for Pekko, you seen him?"
+             - help_fedex
+             - quest.hasQuest('fedex') and not quest.hasFinishedQuest('fedex') and not quest['fedex'].isGoalValue('found_pekko')
+           -
+             - "Oh, were you working?  I'll let you get back to it"
+             - end
+
+    help_beer:
+        - say: "Whoa.  Whoa.  WHOA.  You can make beer?  Astounding."
+        - responses:
+           -
+             - "Never mind"
+             - back
+
+    help_fedex:
+        - say: "Uhhh... Pekko.. Um... Matti saw him.. some time... but Matti don't remember"
+        # perhaps someone else saw him hanging around here.
+        - responses:
+           -
+             - "Really?  You don't remember?  Weird."
+             - back
+
+    explain_shoveling: 
+        - say: "Yeah, uh, Matti basically justs shovel all the snow into this here tank."
+        - responses:
+           - 
+             - "And then what happens?"
+             - snow_tank
+
+    snow_tank: 
+        - say: "Well, uh, it gets melted.. and magically turned into STEAM!!"
+        - responses:
+           - 
+             - "Magically?  What?  Oh, that tanker must be a boiler or something"
+             - main_dialog
+
+    discuss_body: 
+        - say: "A body?  You mean a Dead body?  How did that get there?"
+        - responses:
+           - 
+             - "That's what I'm trying to figure out, Matti.  You are the guy who shovels stuff in there?"
+             - body_continued
+
+    body_continued: 
+        - say: "But Matti only puts the snow into the tank!  Matti don't think dead things are allowed!"
+        - responses:
+           - 
+             - "I don't really see how it could be anyone else..."
+             - accuse_matti
+           - 
+             - "Who else has access?"
+             - drop_matti
+             
+    accuse_matti: 
+        - say: "You think Matti killed Pekko?  No way!  Matti was framed!"
+        - set_value:
+            quest: 'fedex'
+            variable: 'accused_of_murder'
+            value: 'matti'              
+        - responses:
+           - 
+             - "Sure, that's what they all say."
+             - end
+
+    drop_matti: 
+        - say: "Matti doesn't know, but Matti has to sleep sometime"
+        - responses:
+           - 
+             - "I guess that's true.  Still, are the closest person to it."
+             - opening_dialog
+              
+    unaccuse_matti: 
+        - say: "Matti knew you would see the light!  Matti innocent."
+        - set_value:
+            quest: 'fedex'
+            variable: 'accused_of_murder'
+            value: ''              
+        - responses:
+           - 
+             - "I'm sorry for my mistake, Matti.  I hope we can be friends again"
+             - opening_dialog
+
+ 

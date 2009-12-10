@@ -1,0 +1,16 @@
+<!--
+ * Buttons have a dimension of 95x20 pixels
+ * 3 pixels vertical spacing is foreseen between buttons
+ * 7 pixels spacing is foreseen above and below the buttons
+ * Total height should be num_button*20 + (num_button-1)*3 + 2*7
+-->
+
+<Container position_technique="center:center" size="145,172">
+  <Button name="newButton"     text="New Game"    position="25,7" min_size="95,20" max_size="95,20" />
+  <Button name="resumeButton"  text="Resume Game" position="25,30" min_size="95,20" max_size="95,20"/>
+  <Button name="saveButton"    text="Save Game"   position="25,53" min_size="95,20" max_size="95,20"/>
+  <Button name="loadButton"    text="Load Game"   position="25,76"  min_size="95,20" max_size="95,20"/>
+  <Button name="optionsButton" text="Options"     position="25,99" min_size="95,20" max_size="95,20"/>
+  <Button name="helpButton"    text="Help"        position="25,122" min_size="95,20" max_size="95,20" />
+  <Button name="quitButton"    text="Quit"        position="25,145" min_size="95,20" max_size="95,20" />
+</Container>

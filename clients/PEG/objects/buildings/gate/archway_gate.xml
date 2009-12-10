@@ -1,0 +1,4 @@
+<?fife type="object"?>
+<object id="archway_gate" namespace="PARPG" blocking="1" static="1">
+	<image source="archway_gate.png" direction="0" y_offset="28" x_offset="-27" />
+</object>
