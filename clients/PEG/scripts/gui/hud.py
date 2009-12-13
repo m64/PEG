@@ -62,6 +62,7 @@ class Hud(object):
         self.actions_box = self.hud.findChild(name="actionsBox")
         self.actions_text = []
         self.menu_displayed = False
+        self.inventory_storage = None
         self.initializeHud()
         self.initializeMainMenu()
         self.initializeContextMenu()
@@ -134,9 +135,11 @@ class Hud(object):
             'refreshReadyImages': self.refreshReadyImages,
             'toggleInventoryButton': self.toggleInventoryButton,
         }
-        self.inventory = inventorygui.InventoryGUI(self.engine,
-                                            self.data.game_state.PC.inventory,
-                                            inv_callbacks)
+        self.inventory_storage = self.data.game_state.PC.inventory
+        if self.inventory == None:
+            self.inventory = inventorygui.InventoryGUI(self.engine,
+                                                       self.inventory_storage,
+                                                       inv_callbacks)
         self.refreshReadyImages()
         
 
@@ -207,6 +210,8 @@ class Hud(object):
         k_text += "[br] I : Toggle the inventory screen"
         k_text += "[br] F5 : Take a screenshot"
         k_text += "[br]      (saves to <parpg>/screenshots/)"
+        k_text += "[br] F10 : Toggle console"
+        k_text += "[br] PAUSE : (Un)Pause the game"
         k_text += "[br] Q : Quit the game"
         self.help_dialog.distributeInitialData({
                 "MainHelpText":main_help_text,
@@ -393,7 +398,7 @@ class Hud(object):
             button.toggled = 0
 
     def toggleInventory(self, toggleImage=True):
-        """Display's the inventory screen
+        """Displays the inventory screen
            @return: None"""
         if self.inventory == None:
             self.initializeInventory()
@@ -403,17 +408,16 @@ class Hud(object):
         """Make the Ready slot images on the HUD be the same as those 
            on the inventory
            @return: None"""
-        self.setImages(self.hud.findChild(name="hudReady1"),
-                       self.inventory.getImage("Ready1").up_image)
-
-        self.setImages(self.hud.findChild(name="hudReady2"),
-                       self.inventory.getImage("Ready2").up_image)
-
-        self.setImages(self.hud.findChild(name="hudReady3"),
-                       self.inventory.getImage("Ready3").up_image)
-
-        self.setImages(self.hud.findChild(name="hudReady4"),
-                       self.inventory.getImage("Ready4").up_image)
+        for ready in range(1,5):
+            button = self.hud.findChild(name=("hudReady%d" % ready))
+            if self.inventory_storage == None :
+                origin = None
+            else:
+               origin = self.inventory_storage.getItemsInSlot('ready', ready-1)
+            if origin == None:
+                self.setImages(button, self.inventory.slot_empty_images['ready'])
+            else:
+                self.setImages(button,origin.getInventoryThumbnail())
 
     def setImages(self, widget, image):
         """Set the up, down, and hover images of an Imagebutton.

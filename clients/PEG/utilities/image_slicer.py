@@ -67,7 +67,7 @@ def saveSlice(img, filename, num, left, right, slice_width):
     log.info("Wrote %s",new_filename)
     return True 
         
-def sliceImage(filename, slice_width=70, tail_width=105):
+def sliceImage(filename, slice_width=72, tail_width=108):
     """ Opens an image, and produces slice_width pixel wide slices of it
         @type filename: String
         @param filename: Pathname of the image to open
@@ -149,7 +149,7 @@ def main(argv):
     ch.setFormatter(formatter)
     log.addHandler(ch)
     
-    if sliceImage(file, 70, 35):
+    if sliceImage(file, 72, 36):
         log.info("Done")
     else:
         log.info("Aborted")

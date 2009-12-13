@@ -117,4 +117,4 @@ class Inventory(CarryableContainer):
         return None
 
     def __repr__(self):
-        return "[%s:%s "%(self.name, self.ID)+reduce((lambda a,b: str(a) +', '+str(b)), self.items.values())+" ]"
+        return "[Inventory contents: " +reduce((lambda a,b: str(a) +', '+str(b)), self.items.values())+" ]"

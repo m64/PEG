@@ -1,5 +1,5 @@
                                  PARPG README
-                          Last Updated 15 June 2009
+                          Last Updated 13 December 2009
 
 Thank you for downloading PARPG. To get it running, you'll need the FIFE
 engine on your computer. So start by visiting them at:
@@ -10,16 +10,19 @@ When you have Fife installed, this directory (/PARPG) needs to be copied into
 your /fife/clients directory. You can then run the code with the command
 ./run.py from /fife/clients/PARPG/ (Windows users may have to use the
 command python.exe run.py). You can exit by either pressing Q or closing
-the window in the normal way.
-
+the window in the normal way. For more detailed installation instructions
+take a look at http://wiki.parpg.net/Download
+ 
 Keys:
-    Q quits without asking.
+    Q shows quit dialog 
     ESC shows the main menu.
     I shows/hides inventory.
-    F7 takes a screenshot.
     F5 shows the grid co-ordinates.
+    F7 takes a screenshot.
+    F10 shows a debug console
     T shows the grid layout.
     M toggles music on and off.
+    PAUSE (un)pause the game.
 
 It should be noted that PARPG is in no way a complete game as of yet.
 

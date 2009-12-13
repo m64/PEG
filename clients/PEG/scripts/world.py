@@ -93,7 +93,7 @@ class World(EventListenerBase):
     
     def quitGame(self):
         """Quits the game
-        @return: None"""
+           @return: None"""
         self.quitFunction()
 
     def saveGame(self, *args, **kwargs):
@@ -153,14 +153,12 @@ class World(EventListenerBase):
             # we need to quit the game
             self.hud.quitGame()
         if(key_val == key.T):
-            self.active_map.toggle_renderer('GridRenderer')
+            self.active_map.toggleRenderer('GridRenderer')
         if(key_val == key.F1):
             # display the help screen and pause the game
             self.hud.displayHelp()
         if(key_val == key.F5):
-            # logic would say we use similar code to above and toggle
-            # logic here does not work, my friend :-(
-            self.cord_render.setEnabled(not self.cord_render.isEnabled())
+            self.active_map.toggleRenderer('CoordinateRenderer')
         if(key_val == key.F7):
             # F7 saves a screenshot to fife/clients/parpg/screenshots
             t = "screenshots/screen-%s-%s.png" % \
@@ -187,6 +185,9 @@ class World(EventListenerBase):
             self.hud.quit_window.hide()
         if(key_val == key.M):
             self.sounds.toggleMusic()
+        if(key_val == key.PAUSE):
+            # Pause pause/unpause the game 
+            self.togglePause()
 
     def mouseReleased(self, evt):
         """If a mouse button is released, fife calls this routine.
@@ -325,7 +326,7 @@ class World(EventListenerBase):
                     else:
                         return None
         else:
-            return None		
+            return None
 
     def getCoords(self, click):
         """Get the map location x, y coordinates from the screen coordinates
@@ -340,6 +341,12 @@ class World(EventListenerBase):
         location.setMapCoordinates(coord)
         return location
 
+    def togglePause(self):
+        """ Pause/Unpause the game.
+            @return: nothing"""
+        
+        self.active_map.togglePause()
+    
     def deleteMaps(self):
         """Clear all currently loaded maps from FIFE as well as clear our
             local map cache

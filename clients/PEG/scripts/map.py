@@ -146,7 +146,7 @@ class Map(fife.MapChangeListener):
         
         # Make World aware that this is now the active map.
         self.data.view.active_map = self
-                
+
     def addPC(self):
         """Add the player character to the map
            @return: None"""
@@ -161,9 +161,18 @@ class Map(fife.MapChangeListener):
             self.cameras[self.my_cam_id].attach(self.data.game_state.PC.behaviour.agent)
 
         
-    def toggle_renderer(self, r_name):
+    def toggleRenderer(self, r_name):
         """Enable or disable a renderer.
            @return: None"""
         renderer = self.cameras[self.my_cam_id].getRenderer(str(r_name))
         renderer.setEnabled(not renderer.isEnabled())
 
+    def togglePause(self):
+        """ Pause/Unpause the game.
+            @return: nothing"""        
+        
+        # Time multiplier is a float, never do equals on floats
+        if self.map.getTimeMultiplier() >= 1.0:
+            self.map.setTimeMultiplier(0.0)
+        else:
+            self.map.setTimeMultiplier(1.0)

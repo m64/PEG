@@ -23,24 +23,26 @@ class Console:
         @type appListener: ApplicationListener
         @param appListener: ApplicationListener object providing a link with
         the engine, the world and the model"""
-        exit_help = "Terminate application"
-        grid_help = "Toggle grid display"
-        run_help = "Toggle player run/walk"
-        help_help = "Show this help string"
-        load_help = "load directory file"
+        exit_help   = "Terminate application"
+        grid_help   = "Toggle grid display"
+        run_help    = "Toggle player run/walk"
+        help_help   = "Show this help string"
+        load_help   = "Usage: load directory file"
         python_help = "Run some python code"
-        quit_help = "Terminate application"
-        save_help = "save directory file"
+        quit_help   = "Terminate application"
+        save_help   = "Usage: save directory file"
+        pause_help  = "Pause/Unpause the game"
 
         self.commands = [
             {"cmd":"exit"  ,"callback":self.handleQuit  ,"help": exit_help},
             {"cmd":"grid"  ,"callback":self.handleGrid  ,"help": grid_help},
-            {"cmd":"run"   ,"callback":self.handleRun   ,"help": run_help},
             {"cmd":"help"  ,"callback":self.handleHelp  ,"help": help_help},
             {"cmd":"load"  ,"callback":self.handleLoad  ,"help": load_help},
+            {"cmd":"pause" ,"callback":self.handlePause ,"help": pause_help},
             {"cmd":"python","callback":self.handlePython,"help": python_help},
-            {"cmd":"quit"  ,"callback":self.handleQuit  ,"help": quit_help},
+            {"cmd":"run"   ,"callback":self.handleRun   ,"help": run_help},
             {"cmd":"save"  ,"callback":self.handleSave  ,"help": save_help},
+            {"cmd":"quit"  ,"callback":self.handleQuit  ,"help": quit_help},
         ]
         self.app_listener = app_listener
         self.world = self.app_listener.world 
@@ -57,6 +59,16 @@ class Console:
         self.app_listener.quitGame()
         return "Terminating ..."
 
+    def handlePause(self, command):
+        """
+        Implements the pause console command
+        @type command: string
+        @param command: The command to run
+        @return: The resultstring"""
+        
+        self.world.togglePause()
+        return "Game (un)paused"
+    
     def handleGrid(self, command):
         """ 
         Implements the grid console command 
@@ -64,7 +76,7 @@ class Console:
         @param command: The command to run
         @return: The resultstring"""
 
-        self.app_listener.world.active_map.toggle_renderer('GridRenderer')
+        self.app_listener.world.active_map.toggleRenderer('GridRenderer')
         return "Grid toggled"
 
     def handleRun(self, command):

@@ -225,7 +225,9 @@ class InventoryGUI(object):
                 data_drag.dragged_container.takeItem(data_drag.dragged_item)
             self.inventory_storage.moveItemToSlot(data_drag.dragged_item,
                                                   drop_widget.slot, drop_widget.index)
-            self.updateInventoryButtons()
+        if drop_widget.slot == 'ready':
+            self.readyCallback()
+        self.updateInventoryButtons()
         self.resetMouseCursor()
         data_drag.dragging = False
               

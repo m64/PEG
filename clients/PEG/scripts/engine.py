@@ -165,6 +165,11 @@ class Engine:
         # PC specifics between the different PC's
         self.game_state.PC = pc
         self.game_state.PC.setup()
+        
+        # The PC has an inventory, and also some filling of the ready slots 
+        # in the HUD. At this point we sync the contents of the ready slots 
+        # with the contents of the inventory.
+        self.view.hud.initializeInventory()
 
     def addObject(self, layer, obj, instance):
         """Adds an object to the map.
