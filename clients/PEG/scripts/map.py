@@ -154,13 +154,6 @@ class Map(fife.MapChangeListener):
         # Update gamestate.PC
         self.data.game_state.PC.behaviour.onNewMap(self.agent_layer)
 
-        # actually this is real easy, we just have to
-        # attach the main camera to the PC, if a camera
-        # was already used, we simply recycle it. 
-        if self.cameras[self.my_cam_id].getAttached() == None:
-            self.cameras[self.my_cam_id].attach(self.data.game_state.PC.behaviour.agent)
-
-        
     def toggleRenderer(self, r_name):
         """Enable or disable a renderer.
            @return: None"""
