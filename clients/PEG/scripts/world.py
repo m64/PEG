@@ -31,6 +31,15 @@ from map import Map
 
 TDS = Setting()
 
+# simple sign function
+def sign(x):
+    if x == 0.0:
+        return 0.0
+    elif x > 0.0:
+        return 1.0
+    else:
+        return -1.0
+
 # this file should be the meta-file for all FIFE-related code
 # engine.py handles is our data model, whilst this is our view
 # in order to not replicate data, some of our data model will naturally
@@ -79,6 +88,11 @@ class World(EventListenerBase):
 
         # faded objects in top layer
         self.faded_objects = set()
+
+        # current map scroll velocity vector
+        self.scroll_vect = [0.0, 0.0]
+        # scroll speed - should be moved to settings
+        self.scroll_speed = 0.05
 
     def initHud(self):
         """Initialize the hud member
@@ -188,6 +202,34 @@ class World(EventListenerBase):
         if(key_val == key.PAUSE):
             # Pause pause/unpause the game 
             self.togglePause()
+
+        # map scrolling
+        if key_val == key.UP:
+            self.startMapScroll(0, -1)
+        if key_val == key.DOWN:
+            self.startMapScroll(0, 1)
+        if key_val == key.LEFT:
+            self.startMapScroll(-1, 0)
+        if key_val == key.RIGHT:
+            self.startMapScroll(1, 0)
+
+    def keyReleased(self, evt):
+        """Whenever a key is pressed, fife calls this routine.
+           @type evt: fife.event
+           @param evt: The event that fife caught
+           @return: None"""
+        key = evt.getKey()
+        key_val = key.getValue()
+
+        # map scrolling
+        if key_val == key.UP:
+            self.stopMapScroll(0, -1)
+        if key_val == key.DOWN:
+            self.stopMapScroll(0, 1)
+        if key_val == key.LEFT:
+            self.stopMapScroll(-1, 0)
+        if key_val == key.RIGHT:
+            self.stopMapScroll(1, 0)
 
     def mouseReleased(self, evt):
         """If a mouse button is released, fife calls this routine.
@@ -357,6 +399,23 @@ class World(EventListenerBase):
 
         self.maps = {}
 
+    def startMapScroll(self, vx, vy):
+        # ignore doubled or contrary requests 
+        if self.scroll_vect[0] == 0.0:
+            self.scroll_vect[0] = sign(vx)*self.scroll_speed
+
+        if self.scroll_vect[1] == 0.0:
+            self.scroll_vect[1] = sign(vy)*self.scroll_speed
+
+    def stopMapScroll(self, vx, vy):
+        pass
+        # ignore contrary requests
+        if sign(self.scroll_vect[0]) == sign(vx):
+            self.scroll_vect[0] = 0.0
+
+        if sign(self.scroll_vect[1]) == sign(vy):
+            self.scroll_vect[1] = 0.0
+
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py"""
         # uncomment to instrument
@@ -364,3 +423,12 @@ class World(EventListenerBase):
         self.highlightFrontObject()
         self.refreshTopLayerInstanceTransparencies()
         # print "%05f" % (time.time()-t0,)
+
+        # perform map scrolling
+        camera = self.active_map.cameras[self.active_map.my_cam_id]
+        coords = camera.getLocationRef().getMapCoordinates()
+        delta_time = self.engine.getTimeManager().getTimeDelta() 
+        coords.x += self.scroll_vect[0]*delta_time
+        coords.y += self.scroll_vect[1]*delta_time
+        camera.getLocationRef().setMapCoordinates(coords)
+        camera.refresh()
