@@ -92,7 +92,7 @@ class World(EventListenerBase):
         # current map scroll velocity vector
         self.scroll_vect = [0.0, 0.0]
         # scroll speed - should be moved to settings
-        self.scroll_speed = 0.05
+        self.scroll_speed = 1
 
     def initHud(self):
         """Initialize the hud member
@@ -416,6 +416,21 @@ class World(EventListenerBase):
         if sign(self.scroll_vect[1]) == sign(vy):
             self.scroll_vect[1] = 0.0
 
+    def scrollMap(self):
+        """Routine applies scroll_vect to camera position in screen space"""
+        camera = self.active_map.cameras[self.active_map.my_cam_id]
+        map_coords = camera.getLocationRef().getMapCoordinates()
+        screen_coords = camera.toScreenCoordinates(map_coords)
+        delta_time = self.engine.getTimeManager().getTimeDelta()
+        cell_dim = camera.getCellImageDimensions()
+        aspect = cell_dim.x / cell_dim.y
+        screen_coords += fife.Point3D(int(self.scroll_vect[0]*delta_time),
+                                      int(self.scroll_vect[1]*delta_time*aspect))
+        map_coords = camera.toMapCoordinates(screen_coords, True)
+        map_coords.z = 0
+        camera.getLocationRef().setMapCoordinates(map_coords)
+        camera.refresh()
+
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py"""
         # uncomment to instrument
@@ -423,12 +438,5 @@ class World(EventListenerBase):
         self.highlightFrontObject()
         self.refreshTopLayerInstanceTransparencies()
         # print "%05f" % (time.time()-t0,)
+        self.scrollMap()
 
-        # perform map scrolling
-        camera = self.active_map.cameras[self.active_map.my_cam_id]
-        coords = camera.getLocationRef().getMapCoordinates()
-        delta_time = self.engine.getTimeManager().getTimeDelta() 
-        coords.x += self.scroll_vect[0]*delta_time
-        coords.y += self.scroll_vect[1]*delta_time
-        camera.getLocationRef().setMapCoordinates(coords)
-        camera.refresh()
